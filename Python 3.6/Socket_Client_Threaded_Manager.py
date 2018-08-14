@@ -10,11 +10,10 @@ def manage_client(new_client, notification_event, message_queue, stop_flag):
                 try:
                     c.shutdown(socket.SHUT_RDWR)
                 finally:
-                    pass
-                try:
-                    c.close()
-                finally:
-                    pass
+                    try:
+                        c.close()
+                    finally:
+                        logging.info('Client Disconnected: ' + c.getpeername())
                 continue
             stream += data.decode('utf-8')
             while '\n' in stream and not stop_flag:
@@ -22,9 +21,9 @@ def manage_client(new_client, notification_event, message_queue, stop_flag):
                 put_in_queue = False
                 while not put_in_queue and not stop_flag:
                     try:
-                        message_queue.put(message, timeout=0.01)
+                        message_queue.put([message, c], timeout=0.01)
                     except Full:
-                        pass
+                        logging.debug(__name__ + ': Message Queue Full')
                     except Exception as e:
                         logging.error(e)
                     else:
