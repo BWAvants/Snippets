@@ -1,0 +1,35 @@
+#!/bin/sh
+
+sleep 15
+
+IPS=$(hostname -I)
+
+WIFI=""
+
+for IP in $IPS
+do
+  if [ -n $IP ] && [ $IP != "10.250.250.2" ] && [ $IP != "10.250.250.3" ]
+  then
+    WIFI=$IP
+  fi
+done
+
+if [ -z $WIFI ]
+then
+  exit 0
+fi
+
+if [ -r /var/old.ips ]
+then
+  OLDIPS=$(cat /var/old.ips)
+else
+  OLDIPS="0.0.0.0 0.0.0.0"
+fi
+
+if [ "$WIFI" != "$OLDIPS" ]
+then
+  EMAIL=$(cat /home/pi/email.address)
+  echo "IP Changed"
+  echo $WIFI > /var/old.ips
+  echo $WIFI | /usr/bin/mail -s "RasPi IP Report" $EMAIL &
+fi
