@@ -27,9 +27,10 @@ modify the root chrontable to check regularly and update as necessary
     0 * * * * sh /usr/bin/mailip &
     0 0 * * 0 /sbin/shutdown -r +5 Weekly Reboot
 
-create the file /home/pi/email.address to specify recipient
+create the file /home/pi/email.address to specify recipient (example will email itself)
+[for multiple recipients, put them all on one line seperated by a space... it is best not to remove the self email as a backup]
   nano /home/pi/email.address
-    sendto@email.com
+    robinsonlabiot@gmail.com
 
 change the finger information "Full Name" for root so emails are "FROM" an identifiable source
   sudo chfn -f "Email Sender Name" root
