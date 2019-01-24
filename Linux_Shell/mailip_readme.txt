@@ -30,3 +30,6 @@ modify the root chrontable to check regularly and update as necessary
 create the file /home/pi/email.address to specify recipient
   nano /home/pi/email.address
     sendto@email.com
+
+change the finger information "Full Name" for root so emails are "FROM" an identifiable source
+  sudo chfn -f "Email Sender Name" root
