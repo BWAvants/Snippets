@@ -2,3 +2,5 @@
 @reboot echo "0.0.0.0" > /var/old.ips ; sh /usr/bin/mailip &
 
 0 * * * * sh /usr/bin/mailip &
+
+0 0 * * 0 /sbin/shutdown -r +5 Weekly Reboot
