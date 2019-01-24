@@ -28,5 +28,5 @@ modify the root chrontable to check regularly and update as necessary
     0 0 * * 0 /sbin/shutdown -r +5 Weekly Reboot
 
 create the file /home/pi/email.address to specify recipient
-  sudo nano /home/pi/email.address
+  nano /home/pi/email.address
     sendto@email.com
