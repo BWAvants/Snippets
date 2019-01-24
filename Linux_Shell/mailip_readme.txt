@@ -26,3 +26,7 @@ modify the root chrontable to check regularly and update as necessary
     @reboot echo "0.0.0.0" > /var/old.ips ; sh /usr/bin/mailip &
     0 * * * * sh /usr/bin/mailip &
     0 0 * * 0 /sbin/shutdown -r +5 Weekly Reboot
+
+create the file /home/pi/email.address to specify recipient
+  sudo nano /home/pi/email.address
+    sendto@email.com
