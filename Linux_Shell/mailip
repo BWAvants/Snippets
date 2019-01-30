@@ -30,8 +30,10 @@ if [ "$WIFI" != "$OLDIPS" ]
 then
   EMAIL=$(cat /home/pi/email.address)
   echo "IP Changed"
-  echo $WIFI > /var/old.ips
-  SSID="$(tr -d '"' <<< "$(cut -d ':' -f 2 <<< "$(iwgetid)")")"
+  SSID=`iwgetid`
+  SSID=`cut -d ':' -f 2 <<< $SSID`
+  SSID=`tr -d '"' <<< $SSID`
   BODY="$SSID\n\t$WIFI"
   echo -e $BODY | /usr/bin/mail -s "RasPi IP Report" $EMAIL &
+  echo $WIFI > /var/old.ips
 fi
