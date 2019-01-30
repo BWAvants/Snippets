@@ -31,7 +31,7 @@ then
   EMAIL=$(cat /home/pi/email.address)
   echo "IP Changed"
   echo $WIFI > /var/old.ips
-  NL='\n'
-  BODY="$(iwgetid) $NL $WIFI"
-  echo $BODY | /usr/bin/mail -s "RasPi IP Report" $EMAIL &
+  SSID="$(tr -d '"' <<< "$(cut -d ':' -f 2 <<< "$(iwgetid)")")"
+  BODY="$SSID\n\t$WIFI"
+  echo -e $BODY | /usr/bin/mail -s "RasPi IP Report" $EMAIL &
 fi
