@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Runs after network established via systemd
+# Must be located in: /home/pi/
 
 IPS=`hostname -I`
 
