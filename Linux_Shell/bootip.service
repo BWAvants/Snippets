@@ -1,0 +1,16 @@
+[Unit]
+Description=Script to email current SSID and IP on boot and network connect
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/bootip.sh
+Restart=on-failure
+RestartSec=3s
+SuccessExitStatus=225
+
+[Install]
+WantedBy=multi-user.target
+
+# File must be located at /etc/systemd/system/bootip.service
+# Service must be enabled via systemd
