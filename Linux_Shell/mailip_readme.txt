@@ -21,9 +21,15 @@ create new ssmtp.conf file in its place
 place the 'mailip' file in /usr/bin and make it executable
   sudo chmod +x /usr/bin/mailip
 
+place the bootip.sh file in /home/pi and make it executable
+  sudo chmod +x /home/pi/bootip.sh
+  
+place the bootip.service file in /etc/systemd/system and make enable it
+  sudo systemctl daemon-reload
+  sudo systemctl enable bootip
+
 modify the root chrontable to check regularly and update as necessary
   sudo crontab -e
-    @reboot echo "0.0.0.0" > /var/old.ips ; sh /usr/bin/mailip &
     0 * * * * sh /usr/bin/mailip &
     0 0 * * 0 /sbin/shutdown -r +5 Weekly Reboot
 
