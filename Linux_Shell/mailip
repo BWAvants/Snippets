@@ -1,17 +1,21 @@
 #!/bin/bash
 
-if [ $# -ne 0 ]
-  then
-    sleep 10
-fi
+# Must be located in /usr/bin/
+# Must be made executable by root and pi at a minimum
 
 IPS=$(hostname -I)
+
+if [ -z $IPS ]
+  then
+    echo "No IP Address"
+    exit 0
+fi
 
 WIFI=""
 
 for IP in $IPS
 do
-  if [ -n $IP ] && [ $IP != "10.250.250.2" ] && [ $IP != "10.250.250.3" ]
+  if [ $IP != "10.250.250.2" ] && [ $IP != "10.250.250.3" ]
   then
     WIFI=$IP
   fi
@@ -19,6 +23,7 @@ done
 
 if [ -z $WIFI ]
 then
+  echo "No WiFi IP Address"
   exit 0
 fi
 
@@ -26,17 +31,18 @@ if [ -r /var/old.ips ]
 then
   OLDIPS=$(cat /var/old.ips)
 else
-  OLDIPS="0.0.0.0 0.0.0.0"
+  OLDIPS="0.0.0.0"
 fi
 
 if [ "$WIFI" != "$OLDIPS" ]
 then
   EMAIL=$(cat /home/pi/email.address)
   echo "IP Changed"
-  SSID=`iwgetid`
-  SSID=`cut -d ':' -f 2 <<< $SSID`
-  SSID=`tr -d '"' <<< $SSID`
-  BODY="$SSID\n\t$WIFI"
-  echo -e $BODY | /usr/bin/mail -s "RasPi IP Report" $EMAIL &
+  SSID=`iwgetid --raw`
+  BODY="NETWORK: $SSID\n\t$WIFI"
+  echo -e "$BODY"
+  echo -e "$BODY" | /usr/bin/mail -s "RasPi IP Report" $EMAIL
   echo $WIFI > /var/old.ips
 fi
+
+exit 0
