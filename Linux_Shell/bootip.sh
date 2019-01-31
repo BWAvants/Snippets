@@ -2,6 +2,7 @@
 
 # Runs after network established via systemd
 # Must be located in: /home/pi/
+# Must be made executable by root
 
 IPS=`hostname -I`
 
