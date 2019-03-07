@@ -1,6 +1,11 @@
+First, run the following command with the user's password to generate a hash (not particualrly secure, but better than plain text):
+        echo -n plaintext_password_here | iconv -t utf16le | openssl md4
+
+Copy the string following "(stdin)= ", which will be called HASH below
+
 In /etc/wpa_supplicant/wpa_supplicant.conf add this after any preferred networks and before any less desired networks:
 
-REPLACE the identity and password with your info
+REPLACE the identity and password with your info, including pasting the copied string in the place of HASH
 
 network={
         ssid="eduroam"
@@ -8,7 +13,10 @@ network={
         key_mgmt=WPA-EAP
         eap=PEAP
         identity="user@school.edu"
-        password="**********"
+        password=hash:HASH
         phase1="peaplabel=0"
         phase2="auth=MSCHAPV2"
 }
+
+run the following commnd or reboot to take effect:
+        wpa_cli -i wlan0 reconfigure
