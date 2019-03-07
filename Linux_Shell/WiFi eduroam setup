@@ -1,0 +1,14 @@
+In /etc/wpa_supplicant/wpa_supplicant.conf add this after any preferred networks and before any less desired networks:
+
+REPLACE the identity and password with your info
+
+network={
+        ssid="eduroam"
+        scan_ssid=1
+        key_mgmt=WPA-EAP
+        eap=PEAP
+        identity="user@school.edu"
+        password="**********"
+        phase1="peaplabel=0"
+        phase2="auth=MSCHAPV2"
+}
