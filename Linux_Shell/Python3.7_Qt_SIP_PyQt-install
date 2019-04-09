@@ -1,0 +1,138 @@
+  fully update the Raspberry Pi
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo rpi-update
+sudo reboot
+
+  install Python3.7
+
+  install the following build-tools
+
+sudo apt-get install build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
+  Try newer version numbers if a package cannot be found
+
+  download the tar of the python version (3.7.3 in this case)
+
+wget https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tar.xz
+tar xf Python-3.7.3.tar.xz
+cd Python-3.7.3
+./configure
+make -j 4
+sudo make altinstall
+
+  remove the tar and install files:
+
+cd ..
+sudo rm -r Python-3.7.3
+rm Python-3.7.3.tar.xz
+
+  OPTIONAL remove build-tools
+
+sudo apt-get --purge remove build-essential tk-dev -y
+sudo apt-get --purge remove libncurses5-dev libncursesw5-dev libreadline6-dev -y
+sudo apt-get --purge remove libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev -y
+sudo apt-get --purge remove libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev libffi-dev -y
+sudo apt-get autoremove -y
+sudo apt-get clean
+
+  install Qt 5.12.1 (or latest) from source
+
+    install required packages
+  sudo apt-get install build-essential libfontconfig1-dev libdbus-1-dev libfreetype6-dev libicu-dev libinput-dev libxkbcommon-dev libsqlite3-dev libssl-dev libpng-dev libjpeg-dev libglib2.0-dev libraspberrypi-dev
+
+wget http://download.qt.io/official_releases/qt/5.12/5.12.1/single/qt-everywhere-src-5.12.1.tar.xz
+tar xf qt-everywhere-src-5.12.1.tar.xz
+
+optional feateure installs
+  bluetooth:
+sudo apt-get install bluez libbluetooth-dev
+  gstreamer:
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad libgstreamer-plugins-bad1.0-dev gstreamer1.0-pulseaudio gstreamer1.0-tools gstreamer1.0-alsa
+  ALSA (audio):
+sudo apt-get install libasound2-dev
+  Pulseaudio:
+sudo apt-get install pulseaudio libpulse-dev
+  databases:
+sudo apt-get install libpq-dev libmariadbclient-dev
+  CUPS (printing):
+sudo apt-get install libcups2-dev
+  Wayland:
+sudo apt-get install libwayland-dev
+  X11:
+sudo apt-get install libx11-dev libxcb1-dev libxkbcommon-x11-dev libx11-xcb-dev libxext-dev
+  Accessibility:
+sudo apt-get install libatspi-dev
+  SCTP (needs configure option -sctp to be included):
+sudo apt-get install libsctp-dev
+
+  configure Qt build
+
+PKG_CONFIG_LIBDIR=/usr/lib/arm-linux-gnueabihf/pkgconfig:/usr/share/pkgconfig \
+../qt-everywhere-src-5.12.1/configure \
+-v \
+-opengl es2 -eglfs \
+-no-gtk \
+-opensource -confirm-license -release \
+-reduce-exports \
+-force-pkg-config \
+-nomake examples -no-compile-examples \
+-skip qtwayland \
+-skip qtwebengine \
+-no-feature-geoservices_mapboxgl \
+-qt-pcre \
+-no-pch \
+-ssl \
+-evdev \
+-system-freetype \
+-fontconfig \
+-glib \
+-prefix /opt/Qt5.12 \
+-qpa eglfs \
+QMAKE_CFLAGS="
+-march=armv8-a -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8" \
+QMAKE_CXXFLAGS="
+-march=armv8-a -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8
+" \
+QMAKE_LIBS_EGL="-lEGL -lGLESv2" QMAKE_LIBS_OPENVG="-lEGL -lOpenVG -lGLESv2" \
+QMAKE_LIBDIR_OPENGL_ES2=/opt/vc/lib QMAKE_INCDIR_OPENGL_ES2="/opt/vc/include /opt/vc/include/interface/vcos/pthreads /opt/vc/include/interface/vmcs_host/linux" \
+QMAKE_LIBDIR_EGL=/opt/vc/lib QMAKE_INCDIR_EGL="/opt/vc/include /opt/vc/include/interface/vcos/pthreads /opt/vc/include/interface/vmcs_host/linux" \
+QMAKE_LIBDIR_OPENVG=/opt/vc/lib QMAKE_INCDIR_OPENVG="/opt/vc/include /opt/vc/include/interface/vcos/pthreads /opt/vc/include/interface/vmcs_host/linux" \
+-DEGLFS_DEVICE_INTEGRATION=eglfs_brcm
+
+make -j 4
+make install -j 4
+
+  -- note the qmake path: /opt/Qt5.12/bin/qmake
+
+  remove tar and install files:
+
+sudo rm -r qt-everywhere-src-5.12.1
+rm qt-everywhere-src-5.12.1.tar.xz
+
+  install SIP for PyQt5 installation
+
+wget https://www.riverbankcomputing.com/static/Downloads/sip/4.19.15/sip-4.19.15.tar.gz
+tar -xf sip-4.19.15.tar.gz
+cd sip-4.19.15/
+python3.7 configure/py --sip-module=PyQt5.sip
+make -j 4
+sudo make install -j 4
+cd ..
+
+  install PyQt5
+
+wget https://www.riverbankcomputing.com/static/Downloads/PyQt5/5.12.1/PyQt5_gpl-5.12.1.tar.gz
+tar -xf PyQt5_gpl-5.12.1.tar.gz
+cd PyQt5_gpl-5.12.1/
+python3.7 configure.py
+make -j 4
+sudo make install -j 4
+cd ..
+
+  remove tars and install files
+
+sudo rm -r sip-4.19.15
+rm sip-4.19.15.tar.gz
+sudo rm -r PyQt5_gpl-5.12.1
+rm PyQt5_gpl-5.12.1.tar.gz
